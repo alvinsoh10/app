@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Declares the document as an HTML5 file. -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <!-- Contains metadata about the page, not directly visible to the user. -->
+
+        <!-- Specifies the character encoding, ensuring proper display of various characters. -->
+        <meta charset="UTF-8">
+
+        <!-- Crucial for responsive design. It tells the browser to set the viewport width to the device's width and the initial zoom level to 1.0, ensuring the page scales correctly on different devices (mobile, tablet, desktop). -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- Sets the title that appears in the browser tab or window title bar. -->
+        <title>Search App</title>
+
+        <!-- Imports the Tailwind CSS framework. Tailwind provides a set of utility classes that allow for rapid styling directly in the HTML, promoting a consistent and responsive design without writing much custom CSS. -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Contains custom CSS rules that are specific to this page and override/supplement Tailwind classes. -->
+        <style>
+            /* CSS aims to create a clean, modern, and responsive user interface. */
+
+            /* Styles for the entire body of the page. */
+            body {
+                /* Sets the primary font to 'Inter' (a modern, clean font), with `sans-serif` as a fallback. */
+                font-family: 'Inter', sans-serif;
+                /* A light, subtle background color for the entire page. */
+                background-color: #f0f4f8;
+                /* Uses Flexbox to center the `.container` horizontally and vertically on the page. */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                /* Ensures the body takes up at least the full height of the viewport, allowing for vertical centering. */
+                min-height: 100vh;
+                /* Removes default browser margins. */
+                margin: 0;
+            }
+            /* Styles for the main content wrapper. */
+            .container {
+                /* White background for the main content box. */
+                background-color: #ffffff;
+                /* Generous internal spacing. */
+                padding: 2.5rem;
+                /* Significantly rounded corners. */
+                border-radius: 1rem;
+                /* Adds a soft shadow for depth. */
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                /* Centers the text content within the container. */
+                text-align: center;
+                /* Makes the container responsive. It will take 100% width on smaller screens but won't exceed 400px on larger screens. */
+                width: 100%;
+                max-width: 400px;
+            }
+            /* Styles for the search input field. */
+            input[type="text"] {
+                /* Adjusts width to account for padding, ensuring it fits well. */
+                width: calc(100% - 2rem);
+                /* Standard styling for input fields. */
+                padding: 0.75rem 1rem;
+                margin-bottom: 1rem;
+                border: 1px solid #cbd5e0;
+                border-radius: 0.5rem;
+                font-size: 1rem;
+                /* Removes the default browser outline on focus. */
+                outline: none;
+                /* Smooth transition for border color change on focus. */
+                transition: border-color 0.2s;
+            }
+            /* Styles for the search input field when it is focused. */
+            input[type="text"]:focus {
+                /* Changes border color to blue when the input is focused. */
+                border-color: #3b82f6;
+                /* Adds a subtle blue glow on focus, improving user experience. */
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            }
+            /* Styles for the button. */
+            button {
+                /* Sets a blue background and white text. */
+                background-color: #3b82f6;
+                color: white;
+                /* Standard button styling. */
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 0.5rem;
+                font-size: 1rem;
+                /* Changes cursor to a hand icon on hover, indicating it's clickable. */
+                cursor: pointer;
+                /* Smooth transitions for background color and slight movement on hover/active states. */
+                transition: background-color 0.2s, transform 0.1s;
+                /* Adds a subtle shadow. */
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            /* Styles for the button when hovered over. */
+            button:hover {
+                /* Darkens the blue on hover. */
+                background-color: #2563eb;
+                /* Moves the button slightly up, creating a "lift" effect. */
+                transform: translateY(-1px);
+            }
+            /* Styles for the button when actively clicked. */
+            button:active {
+                /* Resets position and reduces shadow on click, giving a "pressed" feel. */
+                transform: translateY(0);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            /* Styles for the result display area. */
+            #result {
+                /* Spacing, padding, background, border-radius, font-size, color for the result div. */
+                margin-top: 1.5rem;
+                padding: 1rem;
+                background-color: #e2e8f0;
+                border-radius: 0.5rem;
+                font-size: 1.1rem;
+                color: #2d3748;
+                /* Uses Flexbox to vertically and horizontally center the text within the result box, even if it's empty. */
+                min-height: 2.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                /* Ensures long text wraps correctly within the div instead of overflowing. */
+                word-break: break-all;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- The main wrapper for the application content. -->
+        <div class="container">
+            <!-- A heading that describes the purpose of the application. -->
+            <h1 class="text-2xl font-bold mb-6 text-gray-800">Append "test" to your search</h1>
+            <!-- The HTML form that handles user input. -->
+            <form id="searchForm" class="flex flex-col items-center">
+                <!-- The text input field where the user types their query. -->
+                <input type="text" id="searchInput" placeholder="Enter your search query..." class="w-full">
+                <!-- The button that, when clicked, submits the form. -->
+                <button type="submit">Process Query</button>
+            </form>
+            <!-- A div element where the processed result from the backend will be displayed. -->
+            <div id="result" class="mt-6 p-4 bg-gray-200 rounded-lg text-gray-700">
+                Result will appear here...
+            </div>
+        </div>
+
+        <!-- The JavaScript handles the interaction between the user, the HTML form, and the backend. -->
+        <script>
+            // This is the main event listener. It selects the form element by its `id="searchForm"`.
+            // It attaches a function to be executed when the form is submitted (either by clicking the submit button or pressing Enter in the input field).
+            // Defines an asynchronous function that takes an `event` object as an argument. `async` is used because we'll be using `await` for the `fetch` API call.
+            document.getElementById('searchForm').addEventListener('submit', async function(event) {
+                // This is crucial! By default, submitting an HTML form causes the browser to reload the page.
+                // `preventDefault()` stops this default behavior, allowing your JavaScript to handle the submission without a page refresh.
+                event.preventDefault();
+
+                // These lines get references to the HTML elements (input field and result display div) using their `id` attributes.
+                const searchInput = document.getElementById('searchInput');
+                const query = searchInput.value; // Retrieves the current text entered by the user in the input field.
+                const resultDiv = document.getElementById('result');
+
+                // Client-side validation: Checks if the `query` string is empty.
+                if (!query) {
+                    resultDiv.textContent = "Please enter a query!";
+                    resultDiv.style.backgroundColor = '#fca5a5'; // Red background for error
+                    return; // Stops further execution of the function.
+                }
+
+                // Provides immediate user feedback by changing the text in the result area to "Processing..."
+                resultDiv.textContent = "Processing...";
+                // Resets its background color, indicating that the request is being sent.
+                resultDiv.style.backgroundColor = '#e2e8f0'; // Default background
+
+                // This is a `try...catch` block for error handling. Network requests can fail for various reasons, and this block gracefully handles those failures.
+                try {
+                    // This is the core of the client-backend communication using the `fetch` API.
+                    const response = await fetch('http://hello:5000/process-search', {
+                        method: 'POST', // Specifies that this is an HTTP POST request.
+                        headers: {
+                            'Content-Type': 'application/json', // Tells the backend that the request body will be in JSON format.
+                        },
+                        // Converts the JavaScript object `{ search_query: query }` into a JSON string and sets it as the request body.
+                        // The key `search_query` must match what your Flask backend expects.
+                        body: JSON.stringify({ search_query: query })
+                    });
+
+                    // Checks if the `response.ok` property is `false`. `response.ok` is `true` for HTTP status codes in the 200-299 range (success), and `false` otherwise.
+                    if (!response.ok) {
+                        const errorData = await response.json(); // Attempts to parse the error message from the backend's JSON response.
+                        throw new Error(errorData.error || `HTTP error! status: ${response.status}`); // Throws an error, which is then caught by the `catch` block.
+                    }
+
+                    // If the response is `ok`, this line parses the response body as JSON.
+                    // This `data` object will contain the `processed_query` from your Flask backend.
+                    const data = await response.json();
+
+                    // Updates the `resultDiv` with the `processed_query` received from the backend.
+                    resultDiv.textContent = data.processed_query;
+                    // Sets its background color to green to indicate success.
+                    resultDiv.style.backgroundColor = '#d1fae5';
+                } catch (error) {
+                    // If any error occurs during the `try` block, this block catches it.
+                    console.error('Error:', error); // Logs the error to the browser's developer console for debugging.
+                    // Displays a user-friendly error message in the `resultDiv`.
+                    resultDiv.textContent = `Error: ${error.message}`;
+                    // Sets the background color to red to visually indicate an error.
+                    resultDiv.style.backgroundColor = '#fca5a5';
+                }
+            });
+        </script>
+    </body>
+    </html>

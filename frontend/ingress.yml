@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: search-app-ingress
+  annotations:
+    # Use the AWS Load Balancer Controller
+    kubernetes.io/ingress.class: alb
+    # Create an internet-facing ALB
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Target pods directly by IP (recommended for EKS Fargate or when pods have routable IPs)
+    alb.ingress.kubernetes.io/target-type: ip
+    # Listen on HTTP port 80
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    # Backend protocol is HTTP
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    # Optional: Add a custom name tag to the ALB in AWS
+    # alb.ingress.kubernetes.io/tags: Environment=Dev,Project=SearchApp
+    # Optional: For HTTPS, you would add an SSL certificate ARN here
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCOUNT_ID:certificate/CERT_ID
+    # alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+  labels:
+    app: search-app
+spec:
+  rules:
+  - http:
+      paths:
+      - path: / # All traffic to the root path
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service # Route traffic to the frontend service
+            port:
+              number: 80 # On port 80 of the frontend service
