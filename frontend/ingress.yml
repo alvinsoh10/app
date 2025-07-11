@@ -28,6 +28,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: frontend-service # Route traffic to the frontend service
+            name: frontend # Route traffic to the frontend service
             port:
               number: 80 # On port 80 of the frontend service
