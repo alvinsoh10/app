@@ -173,7 +173,7 @@
                 // This is a `try...catch` block for error handling. Network requests can fail for various reasons, and this block gracefully handles those failures.
                 try {
                     // This is the core of the client-backend communication using the `fetch` API.
-                    const response = await fetch('http://hello:5000/process-search', {
+                    const response = await fetch('/api/process-search', {
                         method: 'POST', // Specifies that this is an HTTP POST request.
                         headers: {
                             'Content-Type': 'application/json', // Tells the backend that the request body will be in JSON format.

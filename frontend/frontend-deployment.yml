@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: "240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-test:v2"
+          image: "240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-test:nginx-frontend-v2"
           lifecycle:
             preStop:
               exec:
