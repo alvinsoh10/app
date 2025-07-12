@@ -1,2 +1,3 @@
 Flask==2.3.2  # Or the version you used
 Flask-Cors==3.0.10 # Or the version you used
+psycopg2-binary==2.9.10
