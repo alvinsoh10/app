@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: hello
-          image: "240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-test:python-backend-v4"
+          image: "240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-test:python-backend-v5"
           ports:
             - name: http
               containerPort: 5000
