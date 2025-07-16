@@ -14,7 +14,7 @@ def home():
     return jsonify({"message": "Backend is running! Access /process-search with a POST request."})
 
 def get_db_connection():
-    conn = psycopg2.connect(host='database-2.c7d5tw1qlyo8.ap-southeast-1.rds.amazonaws.com',
+    conn = psycopg2.connect(host='db.alvin.com',
                             database='flask_db',
                             user='postgres',
                             password='password')
