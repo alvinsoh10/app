@@ -30,4 +30,4 @@ spec:
           service:
             name: argocd-server # Route traffic to the frontend service
             port:
-              number: 80 # On port 80 of the frontend service
+              number: 443 # On port 80 of the frontend service
