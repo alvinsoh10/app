@@ -9,11 +9,43 @@ docker tag 3ed1bbaa62ef 240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-
 
 docker push 240835895323.dkr.ecr.ap-southeast-1.amazonaws.com/alvin-test:python-backend-v5
 
-Run Terraform apply
-Initialize DB, create tables
-Access to k8s cluster
+run terraform apply
+initialize DB, create tables
+access to k8s cluster
 helm install load balancer controller
-Initialize ArgoCD
-Run Kubectl apply ingress
-KUbectl apply backend
-kubectl apply fronend
+initialize argocd
+run kubectl apply ingress
+kubectl apply backend
+kubectl apply frontend
+
+
+Load Balancer Controller:
+
+delete eksctl CF stack if still tehre
+
+eksctl create iamserviceaccount 
+  --cluster=test-eks
+  --namespace=kube-system 
+  --name=aws-load-balancer-controller 
+  --attach-policy-arn=arn:aws:iam::240835895323:policy/AWSLoadBalancerControllerIAMPolicy 
+  --override-existing-serviceaccounts 
+  --region ap-southeast-1
+  --approve
+
+helm upgrade aws-load-balancer-controller eks/aws-load-balancer-controller 
+  -n kube-system 
+  --set clusterName=test-eks 
+  --set serviceAccount.create=false 
+  --set serviceAccount.name=aws-load-balancer-controller 
+  --version 1.13.0
+
+
+
+
+
+    CREATE TABLE query (
+    id SERIAL PRIMARY KEY,
+    query TEXT NOT NULL,
+    modified TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
