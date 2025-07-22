@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-app # A unique name for your ArgoCD application
+  namespace: argocd   # The namespace where ArgoCD is installed (usually 'argocd')
+spec:
+  project: default    # The ArgoCD project to which this application belongs (default is common)
+
+  source:
+    repoURL: https://github.com/alvinsoh10/argocd-example-apps.git # Replace with your Git repository URL
+    targetRevision: HEAD # Or a specific branch (e.g., 'main'), tag (e.g., 'v1.0.0'), or commit SHA
+    path: guestbook      # The path within the Git repository where your Kubernetes manifests are located
+                         # For example, if your manifests are in 'k8s-manifests/my-app', set path: k8s-manifests/my-app
+
+  destination:
+    server: https://kubernetes.default.svc # The API server URL of your Kubernetes cluster (in-cluster deployment)
+    namespace: guestbook # The target namespace in your cluster where the application will be deployed
+                         # This namespace should exist or be created by ArgoCD (see syncPolicy)
+
+  syncPolicy:
+    automated:
+      prune: true       # Allows ArgoCD to delete resources that no longer exist in Git
+      selfHeal: true    # Allows ArgoCD to revert any manual changes made to resources back to the Git state
+    syncOptions:
+      - CreateNamespace=true

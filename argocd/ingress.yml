@@ -10,16 +10,21 @@ metadata:
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Target type: ip is recommended for EKS (direct to pod IPs)
     alb.ingress.kubernetes.io/target-type: ip
-    # Listen on HTTPS port 443
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    # Specify your ACM certificate ARN for TLS termination at the ALB
+    # Listen on HTTP port 80 (since no ACM certificate is provided)
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    # Removed: alb.ingress.kubernetes.io/certificate-arn (no ACM cert)
+    # Removed: alb.ingress.kubernetes.io/ssl-policy (no HTTPS termination at ALB)
 
     # Conditions for routing gRPC traffic to argogrpc service
     # This rule must be defined first for the ALB to process it before the default path
     alb.ingress.kubernetes.io/conditions.argogrpc-service: |
       [{"field":"http-header","httpHeaderConfig":{"httpHeaderName": "Content-Type", "values":["application/grpc"]}}]
-    # Backend protocol for gRPC and regular HTTP/HTTPS traffic
-    alb.ingress.kubernetes.io/backend-protocol: HTTPS
+    # Backend protocol is HTTP (ALB will forward HTTP traffic to backend)
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    # Optional: If you need to specify specific subnets for the ALB
+    # alb.ingress.kubernetes.io/subnets: "subnet-0abcdef1234567890,subnet-0fedcba9876543210"
+    # Optional: If you need to attach an existing security group to the ALB
+    # alb.ingress.kubernetes.io/security-groups: "sg-0123456789abcdef0"
 spec:
   # This tells the AWS Load Balancer Controller to manage this Ingress
   ingressClassName: alb
@@ -31,9 +36,10 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: argogrpc-service # This must be the name of your ArgoCD gRPC service
+            name: argogrpc # This must be the name of your ArgoCD gRPC service
             port:
-              number: 8080 # This is the target port for gRPC traffic on argogrpc-service
+              # IMPORTANT: Ensure your argogrpc-service listens on HTTP port 80
+              number: 30750
       # General rule for all other HTTP/HTTPS traffic
       - path: /
         pathType: Prefix
@@ -41,4 +47,6 @@ spec:
           service:
             name: argocd-server # This must be the name of your ArgoCD UI service
             port:
-              number: 443 # This is the target port for HTTPS traffic on argocd-server
+              # IMPORTANT: Ensure your argocd-server listens on HTTP port 80
+              number: 8080
+  # The 'tls' section is completely removed as there's no hostname or certificate for TLS termination at ALB
